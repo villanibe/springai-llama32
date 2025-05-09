@@ -1,0 +1,66 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: springai-llama32
+  profiles:
+    default: local
+# To use HTTP/2 protocol to better support SSE, enable both the SSL and the HTTP/2
+# use a self-signed certificate for testing purposes.
+# configure HTTP and HTTPS as well
+# https://www.baeldung.com/spring-boot-http2-tomcat
+# https://stackoverflow.com/questions/30896234/how-set-up-spring-boot-to-run-https-http-ports/52648698#52648698
+server:
+  port: ${PORT:8443}
+  http:
+    port: ${HTTP_PORT:8080}
+  ssl:
+    enabled: true
+    key-store: ${SSL_KEY_FILE:classpath:keystore.p12}
+    key-store-password: ${SSL_PASSWORD:123456}
+    key-store-type: PKCS12
+    key-alias: http2-alias
+  http2:
+    enabled: true
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  # https://docs.spring.io/spring-ai/reference/1.0/index.html
+  ai:
+    model:
+      chat: ollama #Enable Ollama chat model.
+    ollama:
+      # Ollama server instance runs by default on this address https://github.com/ollama/ollama
+      base-url: http://localhost:11434
+      chat:
+        options:
+          # you can pull a model automatically: https://docs.spring.io/spring-ai/reference/1.0/index.html#auto-pulling-models
+          # or download it separately: https://ollama.com/library/llama3.2
+          # https://docs.spring.io/spring-ai/reference/1.0/api/multimodality.html
+          # https://ollama.com/search?c=vision
+          model: llama3.2
+    chat:
+      memory:
+        jdbc:
+          initialize-schema: true #When using database migration tools like Flyway or Liquibase, set false
+  datasource:
+    url: jdbc:postgresql://localhost:5432/springai   # JDBC connection URL for PostgreSQL
+    username: demo
+    password: demo123
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+logging:
+  level:
+    org.springframework.ai: DEBUG
+    org.springframework.ai.chat.client.advisor: DEBUG
+    dev.villani.ai.applications.simplechat: DEBUG
+    org.springframework.jdbc.core.JdbcTemplate: TRACE
+    org.springframework.jdbc.core.StatementCreatorUtils: TRACE
+
+
+
