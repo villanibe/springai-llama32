@@ -35,3 +35,7 @@ build/
 
 ### WSL ###
 *.Identifier
+
+
+### keystore ###
+keystore.p12
