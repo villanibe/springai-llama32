@@ -5,7 +5,7 @@
 askButton.addEventListener('click', () => {
     var inputText = userInput.value;
     //var url = '/api/chat/streaming?question=' + encodeURIComponent(inputText);
-    var url = 'api/chat/streaming-object?question=' + encodeURIComponent(inputText);
+    var url = 'api/chat/v2/streaming?question=' + encodeURIComponent(inputText);
     // clear the input field
     userInput.value = '';
 
